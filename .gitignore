@@ -1,0 +1,15 @@
+*.sw?
+.#*
+*#
+*~
+.classpath
+.project
+.settings
+bin
+build
+target
+logs
+.idea
+*.iml
+run/*.jar
+.DS_STORE

@@ -1,0 +1,12 @@
+- [X] Decide on Tech Stack
+- [-] Project
+    - [X] DB Design
+    - [ ] Scaffold 
+    - [ ] Test Cases
+    - [ ] Controller
+    - [ ] Services
+    - [ ] Repository
+    - [ ] Error handling
+    - [ ] More Test Cases
+    - [ ] Swagger + Documentation
+    - [ ] Deployment
