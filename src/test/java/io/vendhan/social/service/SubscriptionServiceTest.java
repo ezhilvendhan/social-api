@@ -57,7 +57,11 @@ public class SubscriptionServiceTest extends BaseTest {
         SubscriptionDto subscriptionDto =
                 new SubscriptionDto(
                         "lisa@example.com", "john@example.com");
+        Assert.assertTrue("Subscription failed",
+                subscriptionService.subscribe(subscriptionDto));
 
+        subscriptionDto = new SubscriptionDto(
+                        "lisa@example.com", "john@example.com");
         Assert.assertTrue("Block failed",
                 subscriptionService.block(subscriptionDto));
 
@@ -83,6 +87,12 @@ public class SubscriptionServiceTest extends BaseTest {
     public void testGetSubscribers() throws Exception {
         SubscriptionDto subscriptionDto =
                 new SubscriptionDto(
+                        "lisa@example.com", "john@example.com");
+        Assert.assertTrue("Block failed",
+                subscriptionService.block(subscriptionDto));
+
+        subscriptionDto =
+                new SubscriptionDto(
                         "user2@example.com", "john@example.com");
         Assert.assertTrue("Subscription failed",
                 subscriptionService.subscribe(subscriptionDto));
@@ -93,11 +103,6 @@ public class SubscriptionServiceTest extends BaseTest {
 
         SubscriberDto subscriberDto =
                 subscriptionService.getSubscribers(broadcastDto);
-
-        Optional<Subscription> subscription =
-                subscriptionDao.getSubscription(
-                        subscriptionDto.getRequestor(),
-                        subscriptionDto.getTarget());
 
         Assert.assertNotNull(
                 "SubscriberDto must not be null", subscriberDto);

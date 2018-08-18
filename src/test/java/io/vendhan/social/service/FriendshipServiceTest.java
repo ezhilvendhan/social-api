@@ -45,6 +45,12 @@ public class FriendshipServiceTest extends BaseTest {
 
     @Test
     public void testGetFriendsForAPersonWithOneFriend() throws Exception {
+        List<String> friends = new ArrayList<>();
+        friends.add("andy@example.com");
+        friends.add("john@example.com");
+        FriendshipDto friendshipDto = new FriendshipDto(friends);
+        Assert.assertTrue("Friend connection failed",
+                friendshipService.connect(friendshipDto));
         FriendshipDto friendships =
                 friendshipService.getFriends(
                         new PersonDto("andy@example.com"));
@@ -58,11 +64,20 @@ public class FriendshipServiceTest extends BaseTest {
 
     @Test
     public void testCommonFriends() throws Exception {
+
         List<String> friends = new ArrayList<>();
-        friends.add("user1@example.com");
+        friends.add("andy@example.com");
         friends.add("john@example.com");
         FriendshipDto friendshipDto = new FriendshipDto(friends);
-        friendshipService.connect(friendshipDto);
+        Assert.assertTrue("Friend connection failed",
+                friendshipService.connect(friendshipDto));
+
+        friends = new ArrayList<>();
+        friends.add("user1@example.com");
+        friends.add("john@example.com");
+        friendshipDto = new FriendshipDto(friends);
+        Assert.assertTrue("Friend connection failed",
+                friendshipService.connect(friendshipDto));
 
         List<String> commonFriendsInp = new ArrayList<>();
         commonFriendsInp.add("andy@example.com");
