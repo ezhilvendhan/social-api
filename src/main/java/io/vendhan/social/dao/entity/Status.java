@@ -20,11 +20,11 @@ public class Status implements Serializable {
     private String label;
 
     @Column(name = "CREATE_DATE")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
     @Column(name = "UPDATE_DATE")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
     public Status() {

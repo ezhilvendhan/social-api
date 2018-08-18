@@ -3,7 +3,6 @@ package io.vendhan.social.dao.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 
 @Entity
 @Table(name = "SUBSCRIPTION")
@@ -31,11 +30,11 @@ public class Subscription implements Serializable {
     private Status status;
 
     @Column(name = "CREATE_DATE")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date createDate;
 
     @Column(name = "UPDATE_DATE")
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
     public Subscription() {

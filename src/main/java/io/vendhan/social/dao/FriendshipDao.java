@@ -18,4 +18,7 @@ public abstract class FriendshipDao extends
     public void setJpaRepository(FriendshipRepository jpaRepository) {
         super.setJpaRepository(jpaRepository);
     }
+
+    public abstract Friendship getByEmails(
+            String emailOne, String emailTwo) throws Exception;
 }

@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 @Service
 public interface FriendshipService extends BaseService {
 
-    boolean connect(FriendshipDto friendshipDto);
+    boolean connect(FriendshipDto friendshipDto) throws Exception;
 
-    FriendshipDto getFriends(PersonDto personDto);
+    FriendshipDto getFriends(PersonDto personDto) throws Exception;
 
-    FriendshipDto getCommonFriends(FriendshipDto friendshipDto);
+    FriendshipDto getCommonFriends(FriendshipDto friendshipDto) throws Exception;
 
 }

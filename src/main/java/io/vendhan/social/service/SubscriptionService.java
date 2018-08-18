@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SubscriptionService extends BaseService {
 
-    boolean subscribe(SubscriptionDto subscriptionDto);
+    boolean subscribe(SubscriptionDto subscriptionDto) throws Exception;
 
-    boolean block(SubscriptionDto subscriptionDto);
+    boolean block(SubscriptionDto subscriptionDto) throws Exception;
 
-    SubscriberDto getSubscribers(BroadcastDto broadcastDto);
+    SubscriberDto getSubscribers(BroadcastDto broadcastDto) throws Exception;
 
 }

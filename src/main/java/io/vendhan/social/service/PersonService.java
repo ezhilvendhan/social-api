@@ -6,6 +6,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface PersonService extends BaseService {
 
-    Person getPersonFromEmail(String email);
+    Person getPersonFromEmail(String email) throws Exception;
 
 }
