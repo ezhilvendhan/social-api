@@ -7,10 +7,10 @@ import io.vendhan.social.dao.constant.StatusEnum;
 import io.vendhan.social.dao.entity.Person;
 import io.vendhan.social.dao.entity.Status;
 import io.vendhan.social.dao.entity.Subscription;
-import io.vendhan.social.dao.entity.SubscriptionId;
 import io.vendhan.social.model.BroadcastDto;
 import io.vendhan.social.model.SubscriberDto;
 import io.vendhan.social.model.SubscriptionDto;
+import io.vendhan.social.service.FriendshipService;
 import io.vendhan.social.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Autowired
     private SubscriptionDao subscriptionDao;
+
+    @Autowired
+    private FriendshipService friendshipService;
 
     @Autowired
     private PersonDao personDao;
@@ -38,6 +41,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public boolean block(SubscriptionDto subscriptionDto) throws Exception {
+        String subscriberEmail = subscriptionDto.getRequestor();
+        String publisherEmail = subscriptionDto.getTarget();
+        Optional<Subscription> existingSubscription =
+                subscriptionDao.getSubscription(subscriberEmail, publisherEmail);
+        if(existingSubscription.isPresent()) {
+            return changeSubscription(existingSubscription, StatusEnum.BLOCKED);
+        } else if(friendshipService.isFriends(subscriberEmail, publisherEmail)) {
+            Person subscriber = personDao.findByEmail(subscriberEmail);
+            Person publisher = personDao.findByEmail(publisherEmail);
+            return createSubscription(
+                    subscriber, publisher, StatusEnum.BLOCKED);
+        }
         return false;
     }
 
@@ -62,30 +77,33 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             //Unblock
             if(StatusEnum.BLOCKED.getLabel().equals(
                     existingSubscription.get().getStatus().getLabel())) {
-                reactivateSubscription(existingSubscription);
+                return changeSubscription(existingSubscription, StatusEnum.ACTIVE);
             }
         } else {
-            activateSubscription(subscriber, publisher);
+            return createSubscription(subscriber, publisher, StatusEnum.ACTIVE);
         }
-        return true;
+        return false;
     }
 
-    private void activateSubscription(Person subscriber, Person publisher) {
+    private boolean createSubscription(
+            Person subscriber, Person publisher, StatusEnum statusType) {
         Status status =
                 statusDao.getJpaRepository().findByLabel(
-                        StatusEnum.ACTIVE.getLabel()).get(0);
+                        statusType.getLabel()).get(0);
         Subscription subscription =
                 new Subscription(publisher.getId(),
                         subscriber.getId(), status);
         subscriptionDao.getJpaRepository().saveAndFlush(subscription);
+        return true;
     }
 
-    private void reactivateSubscription(Optional<Subscription> existingSubscription) {
+    private boolean changeSubscription(
+            Optional<Subscription> existingSubscription, StatusEnum type) {
         Status status =
-                statusDao.getJpaRepository().findByLabel(
-                        StatusEnum.ACTIVE.getLabel()).get(0);
+                statusDao.getJpaRepository().findByLabel(type.getLabel()).get(0);
         existingSubscription.get().setStatus(status);
         subscriptionDao.getJpaRepository().saveAndFlush(existingSubscription.get());
+        return true;
     }
 
 }

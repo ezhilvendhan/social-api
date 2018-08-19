@@ -13,4 +13,6 @@ public interface FriendshipService extends BaseService {
 
     FriendshipDto getCommonFriends(FriendshipDto friendshipDto) throws Exception;
 
+    boolean isFriends(String personOneEmail, String personTwoEmail) throws Exception;
+
 }

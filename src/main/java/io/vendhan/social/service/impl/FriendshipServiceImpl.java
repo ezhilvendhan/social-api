@@ -75,14 +75,19 @@ public class FriendshipServiceImpl implements FriendshipService {
         return new FriendshipDto(emails);
     }
 
+    @Override
+    public boolean isFriends(
+            String personOneEmail, String personTwoEmail) throws Exception {
+        Optional<Friendship> existingFriendship =
+                friendshipDao.getByEmails(personOneEmail, personTwoEmail);
+        return existingFriendship.isPresent();
+
+    }
+
     private boolean connect(
             String emailOne, String emailTwo) throws Exception {
-        Person personOne = personDao.findByEmail(emailOne);
-        Person personTwo = personDao.findByEmail(emailTwo);
-        FriendshipId friendshipId =
-                new FriendshipId(personOne.getId(), personTwo.getId());
         Optional<Friendship> existingFriendship =
-                friendshipDao.getJpaRepository().findById(friendshipId);
+                friendshipDao.getByEmails(emailOne, emailTwo);
         if(subscriptionService.isBlocked(emailOne, emailTwo)) {
             return false;
         }
@@ -98,12 +103,16 @@ public class FriendshipServiceImpl implements FriendshipService {
                 return false;
             }
         } else {
-            saveNewFriendship(friendshipId);
+            saveNewFriendship(emailOne, emailTwo);
             return true;
         }
     }
 
-    private void saveNewFriendship(FriendshipId friendshipId) {
+    private void saveNewFriendship(String emailOne, String emailTwo) {
+        Person personOne = personDao.findByEmail(emailOne);
+        Person personTwo = personDao.findByEmail(emailTwo);
+        FriendshipId friendshipId =
+                new FriendshipId(personOne.getId(), personTwo.getId());
         Status status =
                 statusDao.getJpaRepository().findByLabel(
                         StatusEnum.ACTIVE.getLabel()).get(0);
