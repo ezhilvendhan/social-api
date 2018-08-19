@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,14 +34,14 @@ public class FriendshipServiceTest extends BaseTest {
         FriendshipDto friendshipDto = new FriendshipDto(friends);
         Assert.assertTrue("Friend connection failed",
                 friendshipService.connect(friendshipDto));
-        Friendship friendship =
+        Optional<Friendship> friendship =
                 friendshipDao.getByEmails(friends.get(0), friends.get(1));
         Assert.assertNotNull("friend one is not connected to two",
-                friendship);
+                friendship.isPresent());
         friendship =
                 friendshipDao.getByEmails(friends.get(1), friends.get(0));
         Assert.assertNotNull("friend two is not connected to one",
-                friendship);
+                friendship.isPresent());
     }
 
     @Test

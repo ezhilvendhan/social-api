@@ -13,8 +13,8 @@ public class PersonServiceImpl implements PersonService {
     private PersonDao personDao;
 
     @Override
-    public Person getPersonFromEmail(String email) {
-        return null;
+    public Person getPersonFromEmail(String email) throws Exception {
+        return personDao.findByEmail(email);
     }
 
 }

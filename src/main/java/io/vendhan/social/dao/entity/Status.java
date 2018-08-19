@@ -76,7 +76,7 @@ public class Status implements Serializable {
 
     @Override
     public String toString() {
-        return "Status{" +
+        return "StatusEnum{" +
                 "id=" + id +
                 ", label='" + label + '\'' +
                 ", createDate=" + createDate +

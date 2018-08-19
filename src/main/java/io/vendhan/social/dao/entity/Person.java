@@ -39,6 +39,9 @@ public class Person implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateDate;
 
+    public Person() {
+    }
+
     public Person(
             @Email(message = ValidationConstant.EMAIL)
             @NotBlank(message = ValidationConstant.EMAIL) String email,

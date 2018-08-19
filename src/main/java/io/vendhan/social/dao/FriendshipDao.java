@@ -6,6 +6,7 @@ import io.vendhan.social.dao.repository.FriendshipRepository;
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Optional;
 
 public abstract class FriendshipDao extends
         BaseDao<FriendshipRepository, Friendship> {
@@ -19,6 +20,6 @@ public abstract class FriendshipDao extends
         super.setJpaRepository(jpaRepository);
     }
 
-    public abstract Friendship getByEmails(
+    public abstract Optional<Friendship> getByEmails(
             String emailOne, String emailTwo) throws Exception;
 }

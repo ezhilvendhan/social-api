@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class PersonDaoImpl extends PersonDao {
 
     public Person findByEmail(String email) {
-        if(null != email) {
+        if(null == email) {
             return null;
         }
         List<Person> persons = this.getJpaRepository().findByEmail(email);
