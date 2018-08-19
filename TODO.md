@@ -3,10 +3,10 @@
     - [X] DB Design
     - [X] Scaffold 
     - [X] Test Cases
-    - [ ] Controller
+    - [X] Controller
     - [X] Services
     - [X] Repository
-    - [ ] Error handling
+    - [X] Error handling
     - [ ] More Test Cases
-    - [ ] Swagger + Documentation
+    - [X] Swagger + Documentation
     - [ ] Deployment
