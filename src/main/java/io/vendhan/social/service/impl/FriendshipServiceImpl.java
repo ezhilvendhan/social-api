@@ -11,6 +11,7 @@ import io.vendhan.social.dao.entity.Status;
 import io.vendhan.social.model.FriendshipDto;
 import io.vendhan.social.model.PersonDto;
 import io.vendhan.social.service.FriendshipService;
+import io.vendhan.social.service.PersonService;
 import io.vendhan.social.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,11 +31,18 @@ public class FriendshipServiceImpl implements FriendshipService {
     private SubscriptionService subscriptionService;
 
     @Autowired
-    private PersonDao personDao;
+    private PersonService personService;
 
     @Autowired
     private StatusDao statusDao;
 
+    /**
+     * Connect 2 friends by email
+     * Each connection inserts 2 records to help in searching mutually
+     * @param friendshipDto
+     * @return true if the inserts are successful
+     * @throws Exception
+     */
     @Override
     public boolean connect(
             FriendshipDto friendshipDto) throws Exception {
@@ -63,6 +71,12 @@ public class FriendshipServiceImpl implements FriendshipService {
         return new FriendshipDto(emails);
     }
 
+    /**
+     * Return Common Friends between 2 user emails
+     * @param friendshipDto
+     * @return
+     * @throws Exception
+     */
     @Override
     public FriendshipDto getCommonFriends(
             FriendshipDto friendshipDto) throws Exception {
@@ -75,6 +89,13 @@ public class FriendshipServiceImpl implements FriendshipService {
         return new FriendshipDto(emails);
     }
 
+    /**
+     * Check if 2 users (emails) are friends
+     * @param personOneEmail
+     * @param personTwoEmail
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean isFriends(
             String personOneEmail, String personTwoEmail) throws Exception {
@@ -108,9 +129,10 @@ public class FriendshipServiceImpl implements FriendshipService {
         }
     }
 
-    private void saveNewFriendship(String emailOne, String emailTwo) {
-        Person personOne = personDao.findByEmail(emailOne);
-        Person personTwo = personDao.findByEmail(emailTwo);
+    private void saveNewFriendship(
+            String emailOne, String emailTwo) throws Exception {
+        Person personOne = personService.getPersonFromEmail(emailOne);
+        Person personTwo = personService.getPersonFromEmail(emailTwo);
         FriendshipId friendshipId =
                 new FriendshipId(personOne.getId(), personTwo.getId());
         Status status =

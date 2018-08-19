@@ -12,6 +12,12 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     private PersonDao personDao;
 
+    /**
+     * Returns a Person entity from Email
+     * @param email
+     * @return
+     * @throws Exception
+     */
     @Override
     public Person getPersonFromEmail(String email) throws Exception {
         return personDao.findByEmail(email);

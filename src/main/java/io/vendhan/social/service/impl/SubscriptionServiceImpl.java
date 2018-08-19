@@ -1,6 +1,5 @@
 package io.vendhan.social.service.impl;
 
-import io.vendhan.social.dao.PersonDao;
 import io.vendhan.social.dao.StatusDao;
 import io.vendhan.social.dao.SubscriptionDao;
 import io.vendhan.social.dao.constant.StatusEnum;
@@ -11,12 +10,12 @@ import io.vendhan.social.model.BroadcastDto;
 import io.vendhan.social.model.SubscriberDto;
 import io.vendhan.social.model.SubscriptionDto;
 import io.vendhan.social.service.FriendshipService;
+import io.vendhan.social.service.PersonService;
 import io.vendhan.social.service.SubscriptionService;
 import io.vendhan.social.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,11 +29,17 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private FriendshipService friendshipService;
 
     @Autowired
-    private PersonDao personDao;
+    private PersonService personService;
 
     @Autowired
     private StatusDao statusDao;
 
+    /**
+     * Subscribe notifications using emails of the publisher and subscriber
+     * @param subscriptionDto
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean subscribe(SubscriptionDto subscriptionDto) throws Exception {
         String subscriberEmail = subscriptionDto.getRequestor();
@@ -42,6 +47,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return subscribe(subscriberEmail, publisherEmail);
     }
 
+    /**
+     * Blocks notifications from a specific publisher
+     * @param subscriptionDto
+     * @return
+     * @throws Exception
+     */
     @Override
     public boolean block(SubscriptionDto subscriptionDto) throws Exception {
         String subscriberEmail = subscriptionDto.getRequestor();
@@ -51,14 +62,26 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if(existingSubscription.isPresent()) {
             return changeSubscription(existingSubscription, StatusEnum.BLOCKED);
         } else if(friendshipService.isFriends(subscriberEmail, publisherEmail)) {
-            Person subscriber = personDao.findByEmail(subscriberEmail);
-            Person publisher = personDao.findByEmail(publisherEmail);
+            Person subscriber = personService.getPersonFromEmail(subscriberEmail);
+            Person publisher = personService.getPersonFromEmail(publisherEmail);
             return createSubscription(
                     subscriber, publisher, StatusEnum.BLOCKED);
         }
         return false;
     }
 
+    /**
+     * Get list of subscribers
+     *  - Eligibility for receiving updates from i.e. "john@example.com":
+            - has not blocked updates from "john@example.com", and
+            - at least one of the following:
+                - has a friend connection with "john@example.com"
+                - has subscribed to updates from "john@example.com"
+                - has been @mentioned in the update
+     * @param broadcastDto
+     * @return
+     * @throws Exception
+     */
     @Override
     public SubscriberDto getSubscribers(BroadcastDto broadcastDto) throws Exception {
         final List<String> subscribers =
@@ -85,8 +108,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     private boolean subscribe(
             String subscriberEmail, String publisherEmail) throws Exception {
-        Person subscriber = personDao.findByEmail(subscriberEmail);
-        Person publisher = personDao.findByEmail(publisherEmail);
+        Person subscriber = personService.getPersonFromEmail(subscriberEmail);
+        Person publisher = personService.getPersonFromEmail(publisherEmail);
         Optional<Subscription> existingSubscription =
                 subscriptionDao.getSubscription(subscriberEmail, publisherEmail);
         if(existingSubscription.isPresent()) {
