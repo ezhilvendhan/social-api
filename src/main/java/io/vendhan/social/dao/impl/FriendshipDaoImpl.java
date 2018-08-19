@@ -8,6 +8,7 @@ import io.vendhan.social.dao.entity.Person;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,5 +23,10 @@ public class FriendshipDaoImpl extends FriendshipDao {
         Person personTwo = personDao.findByEmail(emailTwo);
         return this.getJpaRepository().findById(
                 new FriendshipId(personOne.getId(), personTwo.getId()));
+    }
+
+    public List<Friendship> getFriendsByEmail(String email) throws Exception {
+        Person personOne = personDao.findByEmail(email);
+        return this.getJpaRepository().findByFriendOneId(personOne.getId());
     }
 }

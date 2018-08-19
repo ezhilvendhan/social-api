@@ -46,12 +46,7 @@ public class FriendshipServiceTest extends BaseTest {
 
     @Test
     public void testGetFriendsForAPersonWithOneFriend() throws Exception {
-        List<String> friends = new ArrayList<>();
-        friends.add("andy@example.com");
-        friends.add("john@example.com");
-        FriendshipDto friendshipDto = new FriendshipDto(friends);
-        Assert.assertTrue("Friend connection failed",
-                friendshipService.connect(friendshipDto));
+        this.testConnectNonBlockedContacts();
         FriendshipDto friendships =
                 friendshipService.getFriends(
                         new PersonDto("andy@example.com"));

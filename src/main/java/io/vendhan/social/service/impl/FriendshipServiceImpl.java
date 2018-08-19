@@ -14,7 +14,10 @@ import io.vendhan.social.service.FriendshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FriendshipServiceImpl implements FriendshipService {
@@ -43,7 +46,17 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public FriendshipDto getFriends(
             PersonDto personDto) throws Exception {
-        return null;
+        List<Friendship> friends =
+                friendshipDao.getFriendsByEmail(personDto.getEmail());
+        List<String> emails;
+        if(null != friends) {
+            emails = friends.stream().map(
+                    _friendship -> _friendship.getFriendTwo().getEmail()
+            ).collect(Collectors.toList());
+        } else {
+            emails = new ArrayList<>();
+        }
+        return new FriendshipDto(emails);
     }
 
     @Override
