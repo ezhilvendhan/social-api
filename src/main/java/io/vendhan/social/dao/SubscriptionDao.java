@@ -25,4 +25,7 @@ public abstract class SubscriptionDao extends
 
     public abstract Optional<Subscription> getSubscription(
             String subscriberEmail, String publisherEmail) throws Exception;
+
+    public abstract boolean isBlocked(
+            String subscriberEmail, String publisherEmail) throws Exception;
 }

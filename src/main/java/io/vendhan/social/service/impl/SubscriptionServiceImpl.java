@@ -30,4 +30,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return null;
     }
 
+    @Override
+    public boolean isBlocked(
+            String subscriberEmail, String publisherEmail) throws Exception {
+        return subscriptionDao.isBlocked(subscriberEmail, publisherEmail);
+    }
+
 }

@@ -2,6 +2,7 @@ package io.vendhan.social.dao.impl;
 
 import io.vendhan.social.dao.PersonDao;
 import io.vendhan.social.dao.SubscriptionDao;
+import io.vendhan.social.dao.constant.StatusEnum;
 import io.vendhan.social.dao.entity.Person;
 import io.vendhan.social.dao.entity.Subscription;
 import io.vendhan.social.dao.entity.SubscriptionId;
@@ -26,10 +27,29 @@ public class SubscriptionDaoImpl extends SubscriptionDao {
     @Override
     public Optional<Subscription> getSubscription(
             String subscriberEmail, String publisherEmail) throws Exception {
+        SubscriptionId subscriptionId = getSubscriptionId(
+                subscriberEmail, publisherEmail);
+        return this.getJpaRepository().findById(subscriptionId);
+    }
+
+    @Override
+    public boolean isBlocked(
+            String subscriberEmail, String publisherEmail) throws Exception {
+        SubscriptionId subscriptionId = getSubscriptionId(
+                subscriberEmail, publisherEmail);
+        Optional<Subscription> subscription =
+                this.getJpaRepository().findById(subscriptionId);
+        if(subscription.isPresent()) {
+            return !StatusEnum.ACTIVE.getLabel().equals(
+                        subscription.get().getStatus().getLabel());
+        }
+        return false;
+
+    }
+
+    private SubscriptionId getSubscriptionId(String subscriberEmail, String publisherEmail) {
         Person publisher = personDao.findByEmail(publisherEmail);
         Person subscriber = personDao.findByEmail(subscriberEmail);
-        SubscriptionId subscriptionId =
-                new SubscriptionId(publisher.getId(), subscriber.getId());
-        return this.getJpaRepository().findById(subscriptionId);
+        return new SubscriptionId(publisher.getId(), subscriber.getId());
     }
 }

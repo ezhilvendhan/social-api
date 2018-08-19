@@ -3,6 +3,7 @@ package io.vendhan.social.service.impl;
 import io.vendhan.social.dao.FriendshipDao;
 import io.vendhan.social.dao.PersonDao;
 import io.vendhan.social.dao.StatusDao;
+import io.vendhan.social.dao.SubscriptionDao;
 import io.vendhan.social.dao.constant.StatusEnum;
 import io.vendhan.social.dao.entity.Friendship;
 import io.vendhan.social.dao.entity.FriendshipId;
@@ -11,6 +12,7 @@ import io.vendhan.social.dao.entity.Status;
 import io.vendhan.social.model.FriendshipDto;
 import io.vendhan.social.model.PersonDto;
 import io.vendhan.social.service.FriendshipService;
+import io.vendhan.social.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +26,9 @@ public class FriendshipServiceImpl implements FriendshipService {
 
     @Autowired
     private FriendshipDao friendshipDao;
+
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     @Autowired
     private PersonDao personDao;
@@ -79,6 +84,9 @@ public class FriendshipServiceImpl implements FriendshipService {
                 new FriendshipId(personOne.getId(), personTwo.getId());
         Optional<Friendship> existingFriendship =
                 friendshipDao.getJpaRepository().findById(friendshipId);
+        if(subscriptionService.isBlocked(emailOne, emailTwo)) {
+            return false;
+        }
         if(existingFriendship.isPresent()) {
             if(StatusEnum.ACTIVE.getLabel().equalsIgnoreCase(
                     existingFriendship.get().getStatus().getLabel())) {

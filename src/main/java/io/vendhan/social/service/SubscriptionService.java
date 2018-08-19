@@ -14,4 +14,7 @@ public interface SubscriptionService extends BaseService {
 
     SubscriberDto getSubscribers(BroadcastDto broadcastDto) throws Exception;
 
+    boolean isBlocked(
+            String subscriberEmail, String publisherEmail) throws Exception;
+
 }

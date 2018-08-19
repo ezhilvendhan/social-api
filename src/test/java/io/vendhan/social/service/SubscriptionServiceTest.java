@@ -6,6 +6,7 @@ import io.vendhan.social.dao.entity.Subscription;
 import io.vendhan.social.model.BroadcastDto;
 import io.vendhan.social.model.SubscriberDto;
 import io.vendhan.social.model.SubscriptionDto;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,11 @@ public class SubscriptionServiceTest extends BaseTest {
 
     @Autowired
     private SubscriptionDao subscriptionDao;
+
+    @After
+    public void tearDown() {
+        subscriptionDao.deleteAll();
+    }
 
     @Test
     public void testSubscribe() throws Exception {
