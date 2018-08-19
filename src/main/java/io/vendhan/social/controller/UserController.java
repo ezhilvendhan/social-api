@@ -7,6 +7,7 @@ import io.vendhan.social.constant.RequestUriConstant;
 import io.vendhan.social.model.*;
 import io.vendhan.social.service.FriendshipService;
 import io.vendhan.social.service.SubscriptionService;
+import io.vendhan.social.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,10 +43,12 @@ public class UserController {
     public ResponseEntity<Response> connectFriends(
             @RequestBody @Valid FriendshipDto friends,
             BindingResult bindingResult) throws Exception {
+        ValidationUtil.isValidFriendshipDto(friends);
         boolean result = friendshipService.connect(friends);
         return new ResponseEntity<>(
                 new Response(result), HttpStatus.OK);
     }
+
 
     @ApiOperation(value = "Retrieve the friends list for an email address",
             response = FriendshipResponse.class)
@@ -59,10 +62,12 @@ public class UserController {
     public ResponseEntity<Response> getDirectFriends(
             @RequestBody @Valid PersonDto user,
             BindingResult bindingResult) throws Exception {
+        ValidationUtil.isValidPersonDto(user);
         FriendshipDto friends = friendshipService.getFriends(user);
         return new ResponseEntity<>(
                 new FriendshipResponse(friends), HttpStatus.OK);
     }
+
 
     @ApiOperation(value = "Retrieve the common friends list between two email addresses",
         response = FriendshipResponse.class)
@@ -76,10 +81,12 @@ public class UserController {
     public ResponseEntity<Response> getCommonFriends(
             @RequestBody @Valid FriendshipDto friends,
             BindingResult bindingResult) throws Exception {
+        ValidationUtil.isValidFriendshipDto(friends);
         FriendshipDto commonFriends = friendshipService.getCommonFriends(friends);
         return new ResponseEntity<>(
                 new FriendshipResponse(commonFriends), HttpStatus.OK);
     }
+
 
     @ApiOperation(value = "Subscribe to updates from an email address",
         response = Response.class)
@@ -93,10 +100,12 @@ public class UserController {
     public ResponseEntity<Response> subscribe(
             @RequestBody @Valid SubscriptionDto subscription,
             BindingResult bindingResult) throws Exception {
+        ValidationUtil.isValidSubscriptionDto(subscription);
         boolean result = subscriptionService.subscribe(subscription);
         return new ResponseEntity<>(
                 new Response(result), HttpStatus.OK);
     }
+
 
     @ApiOperation(value = "Block updates from an email address",
         response = Response.class)
@@ -110,10 +119,12 @@ public class UserController {
     public ResponseEntity<Response> block(
             @RequestBody @Valid SubscriptionDto subscription,
             BindingResult bindingResult) throws Exception {
+        ValidationUtil.isValidSubscriptionDto(subscription);
         boolean result = subscriptionService.block(subscription);
         return new ResponseEntity<>(
                 new Response(result), HttpStatus.OK);
     }
+    
 
     @ApiOperation(value = "Retrieve all email addresses that can receive updates from an email address",
         response = BroadcastResponse.class)
@@ -127,6 +138,7 @@ public class UserController {
     public ResponseEntity<Response> getSubscribers(
             @RequestBody @Valid BroadcastDto broadcastDto,
             BindingResult bindingResult) throws Exception {
+        ValidationUtil.isValidBroadcastDto(broadcastDto);
         SubscriberDto subscribers = subscriptionService.getSubscribers(broadcastDto);
         return new ResponseEntity<>(
                 new BroadcastResponse(subscribers), HttpStatus.OK);
