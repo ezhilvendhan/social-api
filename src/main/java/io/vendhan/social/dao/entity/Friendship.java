@@ -76,6 +76,10 @@ public class Friendship implements Serializable {
         return status;
     }
 
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
     public Date getCreateDate() {
         return createDate;
     }

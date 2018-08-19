@@ -17,7 +17,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public boolean subscribe(SubscriptionDto subscriptionDto) {
-        return false;
+
     }
 
     @Override

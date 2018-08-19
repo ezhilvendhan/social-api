@@ -3,7 +3,6 @@ package io.vendhan.social.service.impl;
 import io.vendhan.social.dao.FriendshipDao;
 import io.vendhan.social.dao.PersonDao;
 import io.vendhan.social.dao.StatusDao;
-import io.vendhan.social.dao.SubscriptionDao;
 import io.vendhan.social.dao.constant.StatusEnum;
 import io.vendhan.social.dao.entity.Friendship;
 import io.vendhan.social.dao.entity.FriendshipId;
@@ -91,18 +90,34 @@ public class FriendshipServiceImpl implements FriendshipService {
             if(StatusEnum.ACTIVE.getLabel().equalsIgnoreCase(
                     existingFriendship.get().getStatus().getLabel())) {
                 return true;
+            } else if(StatusEnum.INACTIVE.getLabel().equalsIgnoreCase(
+                    existingFriendship.get().getStatus().getLabel())) {
+                updateInactiveFriendStatus(existingFriendship);
+                return true;
             } else {
                 return false;
             }
         } else {
-            Status status =
-                    statusDao.getJpaRepository().findByLabel(
-                            StatusEnum.ACTIVE.getLabel()).get(0);
-            Friendship friendship = new Friendship(
-                    friendshipId.getFriendOneId(),
-                    friendshipId.getFriendTwoId(), status);
-            friendshipDao.getJpaRepository().save(friendship);
+            saveNewFriendship(friendshipId);
             return true;
         }
+    }
+
+    private void saveNewFriendship(FriendshipId friendshipId) {
+        Status status =
+                statusDao.getJpaRepository().findByLabel(
+                        StatusEnum.ACTIVE.getLabel()).get(0);
+        Friendship friendship = new Friendship(
+                friendshipId.getFriendOneId(),
+                friendshipId.getFriendTwoId(), status);
+        friendshipDao.getJpaRepository().save(friendship);
+    }
+
+    private void updateInactiveFriendStatus(Optional<Friendship> existingFriendship) {
+        Status status =
+                statusDao.getJpaRepository().findByLabel(
+                        StatusEnum.ACTIVE.getLabel()).get(0);
+        existingFriendship.get().setStatus(status);
+        friendshipDao.getJpaRepository().saveAndFlush(existingFriendship.get());
     }
 }
