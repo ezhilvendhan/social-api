@@ -36,7 +36,7 @@ public enum QueryConstant {
                 .append("        LEFT JOIN STATUS ON SUBSCRIPTION.status = STATUS.id")
                 .append("        WHERE PERSON.email = :publisher")
                 .append("        AND STATUS.label = 'ACTIVE')")
-                .append(")");
+                .append(") AND EMAIL <> :publisher");
         GET_SUBSCRIBERS = getSubscribers.toString();
     }
 }
