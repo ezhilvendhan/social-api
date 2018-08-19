@@ -62,7 +62,13 @@ public class FriendshipServiceImpl implements FriendshipService {
     @Override
     public FriendshipDto getCommonFriends(
             FriendshipDto friendshipDto) throws Exception {
-        return null;
+        List<String> emails = friendshipDao.getCommonFriendsByEmail(
+                friendshipDto.getFriends().get(0),
+                friendshipDto.getFriends().get(1));
+        if (null == emails) {
+            emails = new ArrayList<>();
+        }
+        return new FriendshipDto(emails);
     }
 
     private boolean connect(

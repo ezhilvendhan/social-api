@@ -25,4 +25,7 @@ public abstract class FriendshipDao extends
             String emailOne, String emailTwo) throws Exception;
 
     public abstract List<Friendship> getFriendsByEmail(String email) throws Exception;
+
+    public abstract List<String> getCommonFriendsByEmail(
+            String emailOne, String emailtwo) throws Exception;
 }

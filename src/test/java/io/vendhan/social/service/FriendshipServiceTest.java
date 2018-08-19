@@ -5,6 +5,7 @@ import io.vendhan.social.dao.FriendshipDao;
 import io.vendhan.social.dao.entity.Friendship;
 import io.vendhan.social.model.FriendshipDto;
 import io.vendhan.social.model.PersonDto;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,11 @@ public class FriendshipServiceTest extends BaseTest {
 
     @Autowired
     private FriendshipDao friendshipDao;
+
+    @After
+    public void tearDown() {
+        friendshipDao.deleteAll();
+    }
 
     @Test
     public void testConnectNonBlockedContacts() throws Exception {
@@ -75,6 +81,13 @@ public class FriendshipServiceTest extends BaseTest {
         Assert.assertTrue("Friend connection failed",
                 friendshipService.connect(friendshipDto));
 
+        friends = new ArrayList<>();
+        friends.add("user1@example.com");
+        friends.add("lisa@example.com");
+        friendshipDto = new FriendshipDto(friends);
+        Assert.assertTrue("Friend connection failed",
+                friendshipService.connect(friendshipDto));
+
         List<String> commonFriendsInp = new ArrayList<>();
         commonFriendsInp.add("andy@example.com");
         commonFriendsInp.add("user1@example.com");
@@ -83,10 +96,13 @@ public class FriendshipServiceTest extends BaseTest {
         Assert.assertNotNull(
                 "Common Friends count incorrect", commonFriends);
         Assert.assertEquals("No. of common friends not equal to one",
-                1, commonFriends.getFriends().size());
+                2, commonFriends.getFriends().size());
         Assert.assertEquals(
                 "john@example.com must be friends with both andy@example.com and user1@example.com",
                 "john@example.com", commonFriends.getFriends().get(0));
+        Assert.assertEquals(
+                "lisa@example.com must be friends with both andy@example.com and user1@example.com",
+                "lisa@example.com", commonFriends.getFriends().get(1));
     }
 
 }
