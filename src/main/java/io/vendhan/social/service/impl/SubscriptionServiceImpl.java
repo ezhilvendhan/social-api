@@ -12,9 +12,12 @@ import io.vendhan.social.model.SubscriberDto;
 import io.vendhan.social.model.SubscriptionDto;
 import io.vendhan.social.service.FriendshipService;
 import io.vendhan.social.service.SubscriptionService;
+import io.vendhan.social.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,7 +61,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public SubscriberDto getSubscribers(BroadcastDto broadcastDto) throws Exception {
-        return null;
+        final List<String> subscribers =
+                subscriptionDao.getSubscribers(broadcastDto.getSender());
+        StringUtil.getEmailsInText(broadcastDto.getText())
+            .stream()
+            .forEach(email -> {
+                try {
+                    if(!isBlocked(email, broadcastDto.getSender())) {
+                        subscribers.add(email);
+                    }
+                } catch(Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+        return new SubscriberDto(subscribers);
     }
 
     @Override

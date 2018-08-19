@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class FriendshipDaoImpl extends FriendshipDao {
@@ -20,6 +19,7 @@ public class FriendshipDaoImpl extends FriendshipDao {
     @Autowired
     private PersonDao personDao;
 
+    @Override
     public Optional<Friendship> getByEmails(
             String emailOne, String emailTwo) throws Exception{
         Person personOne = personDao.findByEmail(emailOne);
@@ -28,11 +28,13 @@ public class FriendshipDaoImpl extends FriendshipDao {
                 new FriendshipId(personOne.getId(), personTwo.getId()));
     }
 
+    @Override
     public List<Friendship> getFriendsByEmail(String email) throws Exception {
         Person personOne = personDao.findByEmail(email);
         return this.getJpaRepository().findByFriendOneId(personOne.getId());
     }
 
+    @Override
     public List<String> getCommonFriendsByEmail(
             String emailOne, String emailTwo) throws Exception {
         Query query = entityManager.createNativeQuery(

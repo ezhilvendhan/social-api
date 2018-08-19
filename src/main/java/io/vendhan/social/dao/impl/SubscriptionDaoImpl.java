@@ -2,6 +2,7 @@ package io.vendhan.social.dao.impl;
 
 import io.vendhan.social.dao.PersonDao;
 import io.vendhan.social.dao.SubscriptionDao;
+import io.vendhan.social.dao.constant.QueryConstant;
 import io.vendhan.social.dao.constant.StatusEnum;
 import io.vendhan.social.dao.entity.Person;
 import io.vendhan.social.dao.entity.Subscription;
@@ -9,6 +10,7 @@ import io.vendhan.social.dao.entity.SubscriptionId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,14 @@ public class SubscriptionDaoImpl extends SubscriptionDao {
         }
         return false;
 
+    }
+
+    @Override
+    public List<String> getSubscribers(String publisherEmail) throws Exception {
+        Query query = entityManager.createNativeQuery(QueryConstant.GET_SUBSCRIBERS);
+        query.setParameter("publisher", publisherEmail);
+
+        return ((List<String>)query.getResultList());
     }
 
     private SubscriptionId getSubscriptionId(String subscriberEmail, String publisherEmail) {

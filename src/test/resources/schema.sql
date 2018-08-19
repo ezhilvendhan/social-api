@@ -37,3 +37,5 @@ CREATE TABLE IF NOT EXISTS SUBSCRIPTION (
     FOREIGN KEY (publisher, subscriber) REFERENCES PERSON(id, id),
     FOREIGN KEY (status) REFERENCES STATUS(id)
 );
+
+

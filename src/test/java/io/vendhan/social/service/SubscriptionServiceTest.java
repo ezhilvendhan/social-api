@@ -91,13 +91,9 @@ public class SubscriptionServiceTest extends BaseTest {
 
     @Test
     public void testGetSubscribers() throws Exception {
-        SubscriptionDto subscriptionDto =
-                new SubscriptionDto(
-                        "lisa@example.com", "john@example.com");
-        Assert.assertTrue("Block failed",
-                subscriptionService.block(subscriptionDto));
+        testBlock();
 
-        subscriptionDto =
+        SubscriptionDto subscriptionDto =
                 new SubscriptionDto(
                         "user2@example.com", "john@example.com");
         Assert.assertTrue("Subscription failed",
@@ -105,7 +101,8 @@ public class SubscriptionServiceTest extends BaseTest {
 
         BroadcastDto broadcastDto =
                 new BroadcastDto(
-                        "john@example.com", "Hi kate@example.com");
+                        "john@example.com",
+                        "Hi kate@example.com, lisa@example.com");
 
         SubscriberDto subscriberDto =
                 subscriptionService.getSubscribers(broadcastDto);
